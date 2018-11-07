@@ -1,4 +1,4 @@
 ﻿  Source.cpp
-f:\diego suarez\u.m.n.g\introduccion computacion grafica\introduccion computacion grafica 2.0\triangulo\triangulo\source.cpp(442): warning C4101: 'Bp': variable local sin referencia
-f:\diego suarez\u.m.n.g\introduccion computacion grafica\introduccion computacion grafica 2.0\triangulo\triangulo\source.cpp(442): warning C4101: 'temp': variable local sin referencia
+f:\diego suarez\u.m.n.g\introduccion computacion grafica\introduccion computacion grafica 2.0\triangulo\triangulo\source.cpp(488): warning C4101: 'Bp': variable local sin referencia
+f:\diego suarez\u.m.n.g\introduccion computacion grafica\introduccion computacion grafica 2.0\triangulo\triangulo\source.cpp(488): warning C4101: 'temp': variable local sin referencia
   Triangulo.vcxproj -> F:\Diego Suarez\U.M.N.G\Introduccion computacion Grafica\introduccion computacion grafica 2.0\Triangulo\Debug\Triangulo.exe

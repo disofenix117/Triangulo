@@ -4,7 +4,7 @@ Diego Esteban Suarez C.
 Universidad Militar Nueva Granada
 2018
 */
-#include "readerPNMImageFile.h"
+//#include "readerPNMImageFile.h"
 #include <stdlib.h>
 #include <math.h>
 #include<stdio.h>
@@ -21,20 +21,15 @@ int H, W;			//variables de ventana
 int Xme, Yme;       // Punto final de click
 int Xcu, Ycu;		// Coordenadas del cursor
 int clic;//variable para el clic
-float const pi = 2*3.11416;
-
-typedef struct 
+float const pi = 2 * 3.11416;
+float matriz[2][1];
+typedef struct
 {
 	float x;
 	float y;
 } punto;
-punto p1, p2, p3,memoria;
-typedef struct {
-	punto P0;
-	punto Pf;
-	float dx;
-	float dy;
-} arista;
+punto p1, p2, p3, memoria, p4, aux;
+
 
 enum State
 {
@@ -85,31 +80,46 @@ void OnMouse(int btn, int state, int x, int y) //funcion que captura clics
 
 				switch (clic)
 				{
-					case 0:
-					{
-						p1.x = x;
-						p1.y = y;
-						clic = 1;
-						break;
-					}
-						
-					case 1:
-					{
-						p2.x = x;
-						p2.y = y;
-						clic = 2;
-						break;
-					}
-					case 2:
-					{
-						p3.x = x;
-						p3.y = y;
-						clic = 0;
-						glutPostRedisplay();
-						glFlush();
-						break;
-					}
+				case 0:
+				{
+					p1.x = x;
+					p1.y = y;
+					clic = 1;
+					//matriz[0][0] = p1.x;
+					//matriz[0][1] = p1.y;
+					break;
 				}
+
+				case 1:
+				{
+					
+					p2.x = x;
+					p2.y = y;
+					//matriz[1][0] = p2.x;
+					//matriz[1][1] = p2.y;
+					clic = 2;
+					break;
+				}
+				case 2:
+				{
+					
+					p3.x = x;
+					p3.y = y;
+					//matriz[2][0] = p3.x;
+					//matriz[2][1] = p3.y;
+					clic = 0;
+					glutPostRedisplay();
+					glFlush();
+					break;
+				}
+				}
+			}
+			else if (modo == Inspeccionar)
+			{
+				p4.x = x;
+				p4.y = y;
+				glutPostRedisplay();
+				glFlush();
 			}
 
 		}
@@ -122,6 +132,10 @@ void OnMouseMove(int X, int Y)
 	Ycu = Y;
 	Xme = Xcu;
 	Yme = Ycu;
+
+	glColor3f(1.0f, 0.0f, 0.0f);
+	DrawCursor(Xcu, Ycu);
+
 	glutPostRedisplay();
 }
 void OnKeyboard(unsigned char key, int x, int y)// Se configura el modo de graficación en el teclado
@@ -218,6 +232,37 @@ void DrawRectangle(int Xi, int Yi, int Rw, int Rh)
 	DrawHorizontalLine(Xi, xe, ye);
 	DrawVerticalLine(Yi, ye, Xi);
 	DrawVerticalLine(Yi, ye, xe);
+	glEnd();
+}
+void puntomendio()
+{
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	glBegin(GL_POINTS);
+	glColor4f(0.10f, 0.69f, 0.40f, 0.0f);
+	for (int i = 0; i < 50000; i++)
+	{
+		int random;
+		random = rand() % 3;
+		if (random == 0)
+		{
+			p4.x = (p4.x + p1.x) / 2;
+			p4.y = (p4.y + p1.y) / 2;
+			glVertex2i(p4.x, p4.y);
+		}
+		else if (random == 1)
+		{
+			p4.x = (p4.x + p2.x) / 2;
+			p4.y = (p4.y + p2.y) / 2;
+			glVertex2i(p4.x, p4.y);
+		}
+		else if (random == 2)
+		{
+			p4.x = (p4.x + p3.x) / 2;
+			p4.y = (p4.y + p3.y) / 2;
+			glVertex2i(p4.x, p4.y);
+		}
+	}
 	glEnd();
 }
 
@@ -437,9 +482,10 @@ void dibujarTriangulo()
 
 bool testInOut(punto A, punto v)
 {
-	float theta = 0, magnitud,ProdPunt;
+
+	float theta = 0, magnitud, ProdPunt;
 	float e = exp(1);
-	punto Cp,Bp, B, C,temp;
+	punto Cp, Bp, B, C, temp;
 	magnitud = sqrtf(pow(v.x - A.x, 2) + pow(v.y - A.y, 2));
 	Cp.x = (A.x - v.x) / magnitud;
 	Cp.y = (A.y - v.y) / magnitud;
@@ -458,7 +504,7 @@ bool testInOut(punto A, punto v)
 
 	ProdPunt = C.x*Cp.x + C.y*Cp.y;
 	theta += acosf(ProdPunt);
-	return (fabs(theta - 2*pi) < e);
+	return (fabs(theta - 2 * pi) < e);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -493,7 +539,8 @@ void onRender()
 	}
 	else if (modo == Inspeccionar)
 	{
-		
+		puntomendio();
+
 		glColor4f(0.10f, 0.69f, 0.40f, 0.0f);
 		glBegin(GL_LINES);
 		glVertex2i(10, 10);
@@ -501,7 +548,7 @@ void onRender()
 		glVertex2i(10, 60);
 		glVertex2i(100, 100);
 		glEnd();
-	
+
 		glColor4f(0.10f, 0.69f, 0.40f, 0.0f);
 		FillRectangle(10, 10, 100, 100);
 	}
@@ -525,7 +572,7 @@ int main(int argc, char **argv)
 	glutDisplayFunc(onRender);
 	glutReshapeFunc(OnResizeWindow);
 	glutMouseFunc(OnMouse);
-	//glutMotionFunc(OnMouseMove);
+	glutMotionFunc(OnMouseMove);
 	glutKeyboardFunc(OnKeyboard);
 	glutMainLoop();
 
